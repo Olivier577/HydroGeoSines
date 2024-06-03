@@ -96,7 +96,10 @@ class Read(object):
         header = utils.zip_formatter(locations, input_category, unit)
 
         data.columns = pd.MultiIndex.from_tuples(header, names=["location","category","unit"])
-        data = pd.melt(data.reset_index(), id_vars="datetime", var_name=["location","category","unit"], value_name="value").rename(columns=str.lower)
+        # data = pd.melt(data.reset_index(), id_vars="datetime", var_name=["location","category","unit"], value_name="value").rename(columns=str.lower)
+        data = pd.melt(data.reset_index(), id_vars=[("datetime", "", "")], value_name="value")
+        data = data.rename(columns={data.columns[0]: data.columns[0][0]})
+        data = data.rename(columns=str.lower)
 
         # add "part" column as a placeholder
         data["part"] = "all"
@@ -109,7 +112,8 @@ class Read(object):
 
         # how to use the data
         if how == "add":
-            self.data = self.data.append(data)
+            #self.data = self.data.append(data)
+            self.data = pd.concat((self.data, data))
             print("A new time series was added ...")
             
         #TODO: Implement other methods

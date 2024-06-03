@@ -83,7 +83,7 @@ class Read(object):
         d = pd.to_datetime(data.index)
         data.index = d
         # check if dt is "naive":
-        if d.tzinfo is None or d.tzinfo.utcoffset(d) is None:
+        if d.tzinfo is None or d.tzinfo.utcoffset(d.to_pydatetime()[0]) is None:
             # make UTC correction
             print("Datetime was 'naive'. Localized and converted to UTC!")
             data.index = data.index.tz_localize(tz=pytz.FixedOffset(int(60*utc_offset))).tz_convert(pytz.utc)
